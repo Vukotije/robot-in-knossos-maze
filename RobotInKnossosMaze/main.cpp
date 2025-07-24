@@ -1,5 +1,6 @@
 #include <iostream>
 #include <limits>
+#include "Maze.h"
 
 using std::cout;
 using std::cin;
@@ -92,6 +93,8 @@ int main() {
         // max_empty_spaces = columns * rows - 2 * (columns + rows);
         const int max_items = MAX_ITEMS_FRACTION * (columns * rows - 2 * (columns + rows));
         if (!get_valid_items_num(items_num, max_items)) break;    
+		auto maze = Maze(rows, columns, items_num);
+		cout << maze << endl;
 
         //TODO: Game game(rows, cols, numItems)....;
     }

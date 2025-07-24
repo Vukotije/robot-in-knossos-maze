@@ -123,19 +123,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Entity.cpp" />
     <ClCompile Include="Field.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Maze.cpp" />
-    <ClCompile Include="Minotaur.cpp" />
-    <ClCompile Include="Robot.cpp" />
+    <ClCompile Include="MazeGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Entity.h" />
     <ClInclude Include="Field.h" />
     <ClInclude Include="Maze.h" />
-    <ClInclude Include="Minotaur.h" />
-    <ClInclude Include="Robot.h" />
+    <ClInclude Include="MazeGenerator.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

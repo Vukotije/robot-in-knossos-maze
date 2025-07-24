@@ -1,16 +1,19 @@
 #pragma once
-
 #include <vector>
-#include <string>
 #include "Field.h"
+#include <iostream>
 
 class Maze {
 public:
     Maze(int rows, int columns, int numItems);
-    void print() const;
+    ~Maze();
+    int getRows() const;
+    int getColumns() const;
+    std::vector<std::vector<Field*>>& getMatrix();
+
+    friend std::ostream& operator<<(std::ostream& os, const Maze& maze);
 
 private:
     int rows, columns;
-    std::vector<std::vector<Field>> matrix;
-    void generateMaze();
+    std::vector<std::vector<Field*>> matrix;
 };

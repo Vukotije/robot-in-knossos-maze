@@ -13,3 +13,8 @@ void Field::setPosition(std::pair<int, int> position) {
 char Field::getSymbol() const {
     return symbol;
 }
+
+void Field::setSymbol(char symbol)
+{
+	this->symbol = symbol;
+}
