@@ -5,7 +5,7 @@
 
 class MazeGenerator {
 public:
-    void generate(Maze& maze);
+    static void generate(Maze& maze);
 private:
     static void carveMazeDFS(int x, int y, int rows, int cols,
         std::vector<std::vector<Field*>>& matrix, std::vector<std::pair<int, int>>& directions);

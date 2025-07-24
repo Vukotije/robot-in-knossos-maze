@@ -9,7 +9,7 @@ using std::endl;
 const int MIN_MAZE_SIZE = 15;
 const int MAX_MAZE_SIZE = 100;
 const int MIN_ITEMS_NUM = 3;
-const float MAX_ITEMS_FRACTION = 0.1;
+const float MAX_ITEMS_FRACTION = 0.05;
 
 static void clearInput() {
     cin.clear();
@@ -91,7 +91,7 @@ int main() {
         // min_blocks = 2 * (columns + rows)
         // matrix_spaces = columns * rows
         // max_empty_spaces = columns * rows - 2 * (columns + rows);
-        const int max_items = MAX_ITEMS_FRACTION * (columns * rows - 2 * (columns + rows));
+        const int max_items = static_cast<int>(MAX_ITEMS_FRACTION * (columns * rows - 2 * (columns + rows)));
         if (!get_valid_items_num(items_num, max_items)) break;    
 		auto maze = Maze(rows, columns, items_num);
 		cout << maze << endl;
