@@ -9,8 +9,8 @@ public:
     ~Maze();
     int getRows() const;
     int getColumns() const;
-    std::vector<std::vector<Field*>>& getMatrix();
 
+    std::vector<Field*>& operator[](int index);
     friend std::ostream& operator<<(std::ostream& os, const Maze& maze);
 
 private:

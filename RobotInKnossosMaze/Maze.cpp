@@ -28,10 +28,11 @@ int Maze::getColumns() const
     return columns;
 }
 
-vector<vector<Field*>>& Maze::getMatrix()
+std::vector<Field*>& Maze::operator[](int index)
 {
-    return matrix;
+	return matrix[index];
 }
+
 
 ostream& operator<<(ostream& os, const Maze& maze) {
     for (int i = 0; i < maze.rows; ++i) {
