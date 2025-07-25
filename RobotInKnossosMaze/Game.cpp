@@ -4,21 +4,22 @@
 #include <vector>
 #include <utility>
 #include "GameIO.h"
+#include "Item.h"
 
 using std::pair;
 using std::vector;
 
-
-Game::Game(int rows, int columns, int itemsNum)
-    : maze(rows, columns, itemsNum), robot(nullptr), minotaur(nullptr)
+Game::Game(int rows, int columns, int items_num)
+    : maze(rows, columns, items_num), robot(nullptr), minotaur(nullptr)
 {
-    PlaceFields();
+    PlaceFields(items_num);
 }
 
 Game::~Game() {
 }
 
-void Game::PlaceFields() {
+
+void Game::PlaceFields(int items_num) {
 	int rows = maze.getRows();
 	int columns = maze.getColumns();
 
@@ -45,7 +46,7 @@ void Game::PlaceFields() {
         }
     }
 
-    int minotaur_x = rand() % (rows / 3) + 1;
+    int minotaur_x = 1 + rand() % (rows / 3);
     for (int idx : shuffled_columns) {
         if (maze[minotaur_x][idx]->getSymbol() == ' ') {
             maze[minotaur_x][idx]->setSymbol('M');
@@ -53,28 +54,69 @@ void Game::PlaceFields() {
             break;
         }
     }
+    vector<pair<int, int>> emptyFields;
+    for (int i = 1; i < rows - 1; ++i) {
+        for (int j = 1; j < columns - 1; ++j) {
+            if (maze[i][j]->getSymbol() == ' ')
+                emptyFields.push_back(maze[i][j]->getPosition());
+        }
+    }
+    random_shuffle(emptyFields.begin(), emptyFields.end());
+    for (int i = 0; i < items_num && !emptyFields.empty(); ++i) {
+        pair<int, int> pos= emptyFields.back();
+        emptyFields.pop_back();
+        Field* item = Item::createRandomItem(pos);
+        delete maze[pos.first][pos.second];
+        maze[pos.first][pos.second] = item;
+    }
 }
 
-void Game::moveRobot(char direction)
+bool Game::moveRobot(char direction, pair<int, Item*>& current_item)
 {
     pair<int, int> robot_position = robot->getPosition();
     int new_x = robot_position.first;
     int new_y = robot_position.second;
+	bool has_hamer = false;
+	bool has_sword = false;
+    if (current_item.second != nullptr && current_item.second->getType() == ItemType::HAMMER) {
+		has_hamer = true;
+	}
+    if (current_item.second != nullptr && current_item.second->getType() == ItemType::SWORD) {
+		has_sword = true;
+	}
     switch (direction) {
         case 'W': case 'w': new_x--; break;
         case 'S': case 's': new_x++; break;
         case 'A': case 'a': new_y--; break;
         case 'D': case 'd': new_y++; break;
     }
-    if (maze[new_x][new_y]->getSymbol() == ' ' ||
-        maze[new_x][new_y]->getSymbol() == 'I') {
+    if ((maze[new_x][new_y]->getSymbol() == ' ' ||
+        maze[new_x][new_y]->getSymbol() == 'I') ||
+        (has_hamer && maze[new_x][new_y]->getSymbol() == '#'
+         && new_x != 0 && new_x != maze.getRows() - 1
+         && new_y != 0 && new_y != maze.getColumns() - 1)) {
         robot->setSymbol(' ');
         maze[new_x][new_y]->setSymbol('R');
         robot = maze[new_x][new_y];
     }
+    else if (maze[new_x][new_y]->getSymbol() == 'M' && has_sword) {
+		robot->setSymbol(' ');
+		minotaur->setSymbol('R');
+        return true;
+
+    }
+    else if (maze[new_x][new_y]->getSymbol() == 'P') {
+        current_item.second = static_cast<Item*>(maze[new_x][new_y]);
+        current_item.first = 3;
+        GameIO::printItemDescription(current_item.second->get_description());
+        robot->setSymbol(' ');
+        maze[new_x][new_y]->setSymbol('R');
+        robot = maze[new_x][new_y];
+    }
+	return false;
 }
 
-bool Game::moveMinotaur(){
+bool Game::moveMinotaur(pair<int, Item*>& current_item){
     vector<pair<int, int>> directions = { {0, 1}, {1, 0}, {0, -1}, {-1, 0} };
     pair<int, int> minotaur_postition = minotaur->getPosition();
 
@@ -87,10 +129,16 @@ bool Game::moveMinotaur(){
             valid_fields.push_back(maze[field_x][field_y]);
 		}
         else if (maze[field_x][field_y]->getSymbol() == 'R') {
-            minotaur->setSymbol(' ');
-            maze[field_x][field_y]->setSymbol('M');
-            minotaur = maze[field_x][field_y];
-			return true;
+            if (current_item.second != nullptr && current_item.second->getType() == ItemType::SWORD) {
+				maze[minotaur_postition.first][minotaur_postition.second]->setSymbol(' ');
+				return true;
+            } else {
+                minotaur->setSymbol(' ');
+                maze[field_x][field_y]->setSymbol('M');
+                minotaur = maze[field_x][field_y];
+                return true;
+			}
+            
 		}
 	}
     Field* next_field = valid_fields[rand() % valid_fields.size()];
@@ -105,6 +153,10 @@ void Game::run()
 {
 	int end_reason = 0;
     std::string quit_message;
+	pair<int, Item*> current_item = { 0, nullptr };
+	bool killed_minotaur = false;
+	bool fight = false;
+
     do {
         GameIO::printMaze(maze);
 		char direction;
@@ -112,30 +164,43 @@ void Game::run()
         if (wants_to_quit) {
             break;
         }
-        moveRobot(direction);
-        bool lost = moveMinotaur();
+        killed_minotaur = moveRobot(direction, current_item);
+        if (killed_minotaur) {
+            end_reason = 1;
+            break;
+		}
+		current_item.first--;
+
+        fight = moveMinotaur(current_item);        
+        if (fight) {
+            if (current_item.second != nullptr && current_item.second->getType() == ItemType::SWORD) {
+				end_reason = 1;
+				break;
+            }
+			end_reason = 2;
+            break;
+        }
+
         if (robot->getPosition().first == 0) {
 			end_reason = 1;
             break;
 		}
-        if (lost) {
-			end_reason = 2;
-            break;
-        }
+        if (current_item.first < 0 && current_item.second != nullptr) {
+            current_item = { 0, nullptr };
+		}
 	} while (true);
 
     switch (end_reason) {
         case 0:
-			quit_message = GameIO::getQuitMessage();
+            quit_message = GameIO::getQuitMessage();
             break;
         case 1: 
-			quit_message = GameIO::getWonMessage();
+            quit_message = GameIO::getWonMessage();
             break;
         case 2:
-			quit_message = GameIO::getLostMessage();
+            quit_message = GameIO::getLostMessage();
             break;
-	}
+    }
     GameIO::printEndMessage(quit_message);
-	GameIO::writeMazeToFile(maze, "last_maze_state.txt", quit_message);
-
+    GameIO::writeMazeToFile(maze, "last_maze_state.txt", quit_message);
 }

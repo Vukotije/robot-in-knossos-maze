@@ -137,6 +137,14 @@ void GameIO::printEndMessage(string& reason)
         << "=======================================================\n";
 }
 
+void GameIO::printItemDescription(const string& description)
+{
+    cout << "=======================================================\n"
+         << "You picked up:\n"
+		<< description << "\n"
+		<< "=======================================================\n";
+}
+
 const string& GameIO::getQuitMessage()
 {
     static const string msg =
@@ -163,7 +171,7 @@ const string& GameIO::getWonMessage()
         "=======================================================\n"
         " Congratulations!"
         " You have successfully completed the maze!\n"
-        " You outsmarted the Minotaur and found the exit!\n"
+        " You outsmarted the Minotaur!\n"
         "=======================================================\n";
     return msg;
 }
