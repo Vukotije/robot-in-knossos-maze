@@ -14,11 +14,13 @@ public:
 	static void printMaze(Maze& maze);
     static void printEndMessage(std::string& reason);
 
+	static void writeMazeToFile(const Maze& maze, const std::string& filename, std::string& result_message);
+
+private:
 	static const std::string& getQuitMessage();
 	static const std::string& getLostMessage();
 	static const std::string& getWonMessage();
 
-	static void writeMazeToFile(const Maze& maze, const std::string& filename, std::string& result_message);
 
 };
 

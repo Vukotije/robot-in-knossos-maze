@@ -1,5 +1,5 @@
 #include "GameIO.h"
-#include "Constants.h"
+#include "Consts.h"
 #include <iostream>
 #include <fstream>
 
@@ -28,9 +28,7 @@ static bool wantsToQuit() {
 // min_blocks = 2 * (columns + rows)
 // matrix_spaces = columns * rows
 // max_empty_spaces = columns * rows - 2 * (columns + rows);
-const int getMaxItemsNum(int rows, int columns) {
-    return static_cast<int>(MAX_ITEMS_FRACTION * (columns * rows - 2 * (columns + rows)));
-}
+
 
 bool GameIO::getValidDimensions(int& r, int& c) {
     cout << " Enter the maze dimensions <rows, columns> ("

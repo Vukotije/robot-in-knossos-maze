@@ -4,7 +4,6 @@
 #include <vector>
 #include <utility>
 #include "GameIO.h"
-#include <iostream>
 
 using std::pair;
 using std::vector;
@@ -47,7 +46,6 @@ void Game::PlaceFields() {
     }
 
     int minotaur_x = rand() % (rows / 3) + 1;
-	std::cout << "Minotaur X: " << minotaur_x << std::endl;
     for (int idx : shuffled_columns) {
         if (maze[minotaur_x][idx]->getSymbol() == ' ') {
             maze[minotaur_x][idx]->setSymbol('M');
@@ -102,10 +100,6 @@ bool Game::moveMinotaur(){
 	return false;
 }
 
-void Game::GameOver()
-{
-	// TODO: Implement game over logic
-}
 
 void Game::run()
 {
@@ -137,7 +131,7 @@ void Game::run()
         case 1: 
 			quit_message = GameIO::getWonMessage();
             break;
-        case 2: // Player lost
+        case 2:
 			quit_message = GameIO::getLostMessage();
             break;
 	}
