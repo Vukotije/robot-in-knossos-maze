@@ -1,3 +1,4 @@
+// Implementation of maze generation algorithms
 #include "MazeGenerator.h"
 #include "Field.h"
 #include <vector>
@@ -20,6 +21,8 @@ void MazeGenerator::carveMazeDFS(int x, int y, int rows, int cols, Maze& maze, v
         int betweenX = x + dx / 2;
         int betweenY = y + dy / 2;
 
+        // Check if next position is within bounds and is a wall and carve a path
+        // by removing the wall between current and next position
         if (next_x > 0 && next_x < rows - 1 && next_y > 0 && next_y < cols - 1
             && maze[next_x][next_y]->getSymbol() == '#') {
             maze[betweenX][betweenY]->setSymbol(' ');
@@ -40,6 +43,7 @@ void MazeGenerator::generate(Maze& maze) {
         }
     }
 
+    // Ensure odd dimensions for maze generation
     int odd_rows = rows;
     int odd_columns = columns;
     if (rows % 2 == 0) --odd_rows;
@@ -48,7 +52,7 @@ void MazeGenerator::generate(Maze& maze) {
     vector<pair<int, int>> directions = { {-2, 0}, {2, 0}, {0, -2}, {0, 2} };
     carveMazeDFS(1, 1, odd_rows, odd_columns, maze, directions);
 
-    // Take care of extra row and column if even dimensions
+    // Handle extra row and column for even dimensions
     if (rows != odd_rows) {
         for (int j = 1; j < rows - 1; ++j) {
             if (rand() % 2 == 0) {
@@ -64,15 +68,17 @@ void MazeGenerator::generate(Maze& maze) {
         }
     }
 
-	// Add extra paths to create loops and alternatives to avid minotaur capture
+	// Add extra paths to top third to create loops
+    // and alternatives to avoid minotaur capture
     int extraPaths = (rows * columns) / 20;
     for (int n = 0; n < extraPaths; ++n) {
-        int x = 1 + rand() % (int((rows - 2)/4));
+        int x = 1 + rand() % (int((rows - 2)/3));
         int y = 1 + rand() % (columns - 2);
         if (maze[x][y]->getSymbol() == '#') {
-            if (maze[x-1][y]->getSymbol() == ' ' && maze[x+1][y]->getSymbol() == ' ') maze[x][y]->setSymbol(' ');
-            else if (maze[x][y-1]->getSymbol() == ' ' && maze[x][y+1]->getSymbol() == ' ') maze[x][y]->setSymbol(' ');
+            if (maze[x-1][y]->getSymbol() == ' ' && maze[x+1][y]->getSymbol() == ' ') 
+                maze[x][y]->setSymbol(' ');
+            else if (maze[x][y-1]->getSymbol() == ' ' && maze[x][y+1]->getSymbol() == ' ') 
+                maze[x][y]->setSymbol(' ');
         }
-        
     }
 }

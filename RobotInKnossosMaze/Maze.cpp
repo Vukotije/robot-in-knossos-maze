@@ -1,3 +1,4 @@
+// Implementation of the Maze class
 #include "Maze.h"
 #include <iostream>
 #include "MazeGenerator.h"

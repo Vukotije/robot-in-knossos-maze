@@ -316,8 +316,9 @@ paket-files/
 __pycache__/
 *.pyc
 
-# Text files
+# Text files (ignore .txt files in all directories)
 *.txt
+**/*.txt
 
 # Cake - Uncomment if you are using it
 # tools/**

@@ -1,3 +1,6 @@
+// This file contains the main function that initializes the game,
+// collects user input for game parameters, and runs the game loop.
+
 #include "GameIO.h"
 #include "Game.h"
 #include <chrono>
@@ -6,6 +9,9 @@ using std::chrono::steady_clock;
 using std::chrono::milliseconds;
 using std::chrono::duration_cast;
 
+// Main initializes random seed, displays welcome message, collects user input
+// for maze dimensions and item count, measures maze generation time,
+// and starts the game.
 int main() {
     int rows, columns, items_num;
     std::srand(static_cast<unsigned int>(std::time(nullptr)));

@@ -1,3 +1,5 @@
+// Implementation of the Field class
+
 #include "Field.h"
 
 Field::Field(std::pair<int, int> position, char symbol) : position(position), symbol(symbol) {}

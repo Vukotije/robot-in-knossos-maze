@@ -1,3 +1,8 @@
+/**
+ * @file GameIO.cpp
+ * @brief Implementation of game input/output operations
+ */
+
 #include "GameIO.h"
 #include "Consts.h"
 #include <iostream>
@@ -12,11 +17,14 @@ using std::pair;
 using std::min;
 using std::max;
 
+// Clears the input buffer after invalid input
 static void clearInput() {
     cin.clear();
     cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 }
 
+ // Checks if the user wants to quit by entering 'Q' or 'q'
+ // returns true if user wants to quit, false otherwise
 static bool wantsToQuit() {
     char ch;
     cin >> ch;
@@ -27,12 +35,6 @@ static bool wantsToQuit() {
     cin.putback(ch);
     return false;
 }
-
-// Custom logic for determening max number of items:
-// min_blocks = 2 * (columns + rows)
-// matrix_spaces = columns * rows
-// max_empty_spaces = columns * rows - 2 * (columns + rows);
-
 
 bool GameIO::getValidDimensions(int& r, int& c) {
     cout << " Enter the maze dimensions <rows, columns> ("
@@ -79,7 +81,7 @@ bool GameIO::getValidItemsNum(int& n, int row, int columns) {
     return false;
 }
 
-char GameIO::getRobotMoveDirection(char& direction)
+bool GameIO::getRobotMoveDirection(char& direction)
 {
     cout << " Enter the robot move direction: ";
     while (!wantsToQuit()) {

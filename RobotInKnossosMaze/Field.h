@@ -1,6 +1,8 @@
 #pragma once
 #include <utility>
 
+// Base class for all objects that can be placed in the maze, including
+// walls, empty spaces, exit, entrance, robot, minotaur, and items.
 class Field {
 public:
     Field(std::pair<int, int>, char symbol);
@@ -12,5 +14,6 @@ public:
 
 private:
     std::pair<int, int> position;
+    /// Character symbol for display representation
     char symbol;
 };
