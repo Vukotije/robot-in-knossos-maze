@@ -65,7 +65,7 @@ void MazeGenerator::generate(Maze& maze) {
     }
 
 	// Add extra paths to create loops and alternatives to avid minotaur capture
-    int extraPaths = (rows * columns) / 30;
+    int extraPaths = (rows * columns) / 20;
     for (int n = 0; n < extraPaths; ++n) {
         int x = 1 + rand() % (int((rows - 2)/4));
         int y = 1 + rand() % (columns - 2);

@@ -14,11 +14,10 @@ private:
 	Maze maze;
 	Field* robot;
 	Field* minotaur;
-	std::vector<std::pair<int, Item*>> current_items;
-	bool has_sword;
-	bool has_shield;
-	bool has_hammer;
-	bool has_fog;
+	std::pair<bool, int> sword_info;
+	std::pair<bool, int> shield_info;
+	std::pair<bool, int> hammer_info;
+	std::pair<bool, int> war_fog_info;
 
 	void PlaceFields(int items_num);
 	bool moveRobot(char direction);

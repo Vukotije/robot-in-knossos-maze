@@ -8,6 +8,7 @@ using std::chrono::duration_cast;
 
 int main() {
     int rows, columns, items_num;
+    std::srand(static_cast<unsigned int>(std::time(nullptr)));
     GameIO::printWelcomeMessage();
     if (!GameIO::getValidDimensions(rows, columns)) return 0;
     if (!GameIO::getValidItemsNum(items_num, rows, columns)) return 0;
