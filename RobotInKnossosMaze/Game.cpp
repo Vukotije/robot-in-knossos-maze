@@ -10,7 +10,8 @@ using std::pair;
 using std::vector;
 
 Game::Game(int rows, int columns, int items_num)
-	: maze(rows, columns, items_num), robot(nullptr), minotaur(nullptr), current_item{ 0, nullptr }
+	: maze(rows, columns, items_num), robot(nullptr), minotaur(nullptr), current_items(),
+	has_sword(false), has_shield(false), has_hammer(false), has_fog(false)
 {
     PlaceFields(items_num);
 }
@@ -84,8 +85,7 @@ bool Game::moveRobot(char direction)
     }
     if ((maze[new_x][new_y]->getSymbol() == ' ' ||
         maze[new_x][new_y]->getSymbol() == 'I') ||
-        (current_item.second != nullptr && current_item.second->getType() == ItemType::HAMMER 
-            && maze[new_x][new_y]->getSymbol() == '#'
+        (has_hammer && maze[new_x][new_y]->getSymbol() == '#'
          && new_x != 0 && new_x != maze.getRows() - 1
          && new_y != 0 && new_y != maze.getColumns() - 1)) {
         robot->setSymbol(' ');
@@ -93,15 +93,13 @@ bool Game::moveRobot(char direction)
         robot = maze[new_x][new_y];
     }
     else if (maze[new_x][new_y]->getSymbol() == 'M') {
-        if (current_item.second != nullptr) {
-            if (current_item.second->getType() == ItemType::SWORD) {
-                robot->setSymbol(' ');
-                minotaur->setSymbol('R');
-                return true;
-            }
-            else if (current_item.second->getType() == ItemType::SHIELD) {
-                return false;
-            }
+        if (has_sword) {
+            robot->setSymbol(' ');
+            minotaur->setSymbol('R');
+            return true;
+        }
+        else if (has_shield) {
+            return false;
         }
         else {
             robot->setSymbol(' ');
@@ -110,9 +108,9 @@ bool Game::moveRobot(char direction)
     }
     
     else if (maze[new_x][new_y]->getSymbol() == 'P') {
-        current_item.second = static_cast<Item*>(maze[new_x][new_y]);
-        current_item.first = 3;
-        GameIO::printItemDescription(current_item.second->get_description());
+        pair<int, Item*> item = { 3, static_cast<Item*>(maze[new_x][new_y]) };
+        GameIO::printItemDescription(item.second->get_description());
+        current_items.push_back(item);
         robot->setSymbol(' ');
         maze[new_x][new_y]->setSymbol('R');
         robot = maze[new_x][new_y];
@@ -133,20 +131,19 @@ bool Game::moveMinotaur(){
             valid_fields.push_back(maze[field_x][field_y]);
 		}
         else if (maze[field_x][field_y]->getSymbol() == 'R') {
-            if (current_item.second != nullptr) {
-                if (current_item.second->getType() == ItemType::SWORD) {
-                    maze[minotaur_postition.first][minotaur_postition.second]->setSymbol(' ');
-                    return true;
-                } 
-                else if (current_item.second->getType() == ItemType::SHIELD) {
-					continue;
-                }
-            } else {
+            if (has_sword) {
+                maze[minotaur_postition.first][minotaur_postition.second]->setSymbol(' ');
+                return true;
+            } 
+            else if (has_shield) {
+                continue;
+}
+            else {
                 minotaur->setSymbol(' ');
                 robot->setSymbol('M');
                 minotaur = maze[field_x][field_y];
                 return true;
-			}            
+            }            
 		}
 	}
     if (!valid_fields.empty()) {
@@ -156,6 +153,27 @@ bool Game::moveMinotaur(){
         minotaur = next_field;
 	}
 	return false;
+}
+
+void Game::updateItems()
+{
+    for (pair<int, Item*> item : current_items) {
+        if (item.first >= 0) {
+
+            if (item.second->getType() == ItemType::SWORD) {
+                has_sword = true;
+            }
+            else if (item.second->getType() == ItemType::SHIELD) {
+                has_shield = true;
+            }
+            else if (item.second->getType() == ItemType::HAMMER) {
+                has_hammer = true;
+            }
+            else if (item.second->getType() == ItemType::WAR_FOG) {
+                has_fog = true;
+            }
+        }
+    }
 }
 
 
@@ -168,15 +186,21 @@ void Game::run()
 	bool wants_to_quit = false;
 
     do {
-        GameIO::printMaze(maze);
+        if (has_fog) {
+            GameIO::printFoggedMaze(maze, robot);
+        } else {
+            GameIO::printMaze(maze);
+		}
+                
         wants_to_quit = GameIO::getRobotMoveDirection(direction);
         if (wants_to_quit) {
             break;
         }
 
         fight = moveRobot(direction);
+		updateItems();
         if (fight) {
-            if (current_item.second != nullptr && current_item.second->getType() == ItemType::SWORD) {
+            if (has_sword) {
                 end_reason = 2;
                 break;
             }
@@ -185,7 +209,7 @@ void Game::run()
 		}
         fight = moveMinotaur();        
         if (fight) {
-            if (current_item.second != nullptr && current_item.second->getType() == ItemType::SWORD) {
+            if (has_sword) {
 				end_reason = 1;
 				break;
             }
@@ -198,11 +222,29 @@ void Game::run()
             break;
 		}
 
-        current_item.first--;
-        if (current_item.first < 0 && current_item.second != nullptr) {
-            current_item = { 0, nullptr };
+        for (pair<int, Item*>& current_item : current_items) {
+			current_item.first--;
+            if (current_item.first < 0) {
+                switch (current_item.second->getType())
+                {
+                case ItemType::SWORD:
+                    has_sword = false;
+                    break;
+                case ItemType::SHIELD:
+                    has_shield = false;
+                    break;
+                case ItemType::HAMMER:
+                    has_hammer = false;
+                    break;
+                case ItemType::WAR_FOG:
+                    has_fog = false;
+                    break;
+                }
+            }
 		}
-	} while (true);
+	}
+    while (true);
+
 
     switch (end_reason) {
         case 0:

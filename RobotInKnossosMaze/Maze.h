@@ -11,6 +11,7 @@ public:
     int getColumns() const;
 
     std::vector<Field*>& operator[](int index);
+    std::vector<Field*> const& operator[](int index) const;
     friend std::ostream& operator<<(std::ostream& os, const Maze& maze);
 
 private:

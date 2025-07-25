@@ -4,7 +4,7 @@
 #include <string>
 
 enum class ItemType {
-    WAR_MIST,
+    WAR_FOG,
     SWORD,
     SHIELD,
     HAMMER
@@ -21,10 +21,10 @@ class Item : public Field
     virtual std::string get_description() const = 0;
 };
 
-class WarMist : public Item {
+class WarFog : public Item {
 public:
-    WarMist(std::pair<int, int> position);
-    ~WarMist() override;
+    WarFog(std::pair<int, int> position);
+    ~WarFog() override;
     ItemType getType() const override;
     std::string get_description() const override;
 };

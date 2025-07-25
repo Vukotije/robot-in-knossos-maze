@@ -8,13 +8,12 @@ using std::string;
 Item::Item(pair<int, int> postion) : Field(postion, 'P') {}
 
 Item* Item::createRandomItem(pair<int, int> position) {
-	//int item_type = rand() % 4;
-	int item_type = 0; // For now, we only have Hammer as a valid item type
+	int item_type = rand() % 4;
 	switch (item_type) {
-		case 0: return new WarMist(position);
-		//case 1: return new Sword(position);
-		//case 2: return new Shield(position);
-		//case 3: return new Hammer(position);
+		case 0: return new WarFog(position);
+		case 1: return new Sword(position);
+		case 2: return new Shield(position);
+		case 3: return new Hammer(position);
 		default: return nullptr;
 	}
 	
@@ -22,12 +21,12 @@ Item* Item::createRandomItem(pair<int, int> position) {
 
 
 
-WarMist::WarMist(pair<int, int> position) : Item(position) {}
-WarMist::~WarMist() {};
-ItemType WarMist::getType() const {
-	return ItemType::WAR_MIST;
+WarFog::WarFog(pair<int, int> position) : Item(position) {}
+WarFog::~WarFog() {};
+ItemType WarFog::getType() const {
+	return ItemType::WAR_FOG;
 }
-string WarMist::get_description() const {
+string WarFog::get_description() const {
 	return "War Mist: A mystical fog that grants temporary invincibility.";
 }
 

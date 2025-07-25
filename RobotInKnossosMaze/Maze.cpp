@@ -33,11 +33,15 @@ std::vector<Field*>& Maze::operator[](int index)
 	return matrix[index];
 }
 
+std::vector<Field*> const& Maze::operator[](int index) const
+{
+    return matrix[index];
+}
 
 ostream& operator<<(ostream& os, const Maze& maze) {
     for (int i = 0; i < maze.rows; ++i) {
         for (int j = 0; j < maze.columns; ++j) {
-            os << maze.matrix[i][j]->getSymbol();   
+            os << maze[i][j]->getSymbol();   
         }
         os << '\n';
     }

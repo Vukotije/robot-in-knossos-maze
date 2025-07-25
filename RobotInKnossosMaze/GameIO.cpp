@@ -2,11 +2,15 @@
 #include "Consts.h"
 #include <iostream>
 #include <fstream>
+#include <algorithm>
 
 using std::cout;
 using std::cin;
 using std::endl;
 using std::string;
+using std::pair;
+using std::min;
+using std::max;
 
 static void clearInput() {
     cin.clear();
@@ -123,10 +127,24 @@ void GameIO::printMazeGenerationTime(long long time)
         << "=======================================================\n";
 }
 
-void GameIO::printMaze(Maze& maze)
+void GameIO::printMaze(const Maze& maze)
 {
 	cout << maze << endl;
 }
+
+void GameIO::printFoggedMaze(const Maze& maze, Field* robot)
+{
+	pair<int, int> robot_position = robot->getPosition();
+	int robot_x = robot_position.first;
+	int robot_y = robot_position.second;
+    for (int i = max(0, robot_x - 3); i <= min(robot_x + 3, maze.getRows() - 1); ++i) {
+        for (int j = max(0, robot_y - 3); j <= min(robot_y + 3, maze.getColumns() - 1); ++j) {
+            cout << maze[i][j]->getSymbol();
+        }
+        cout << endl;
+    }
+}
+
 
 void GameIO::printEndMessage(string& reason)
 {
