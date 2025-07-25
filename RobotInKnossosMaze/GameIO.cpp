@@ -24,13 +24,12 @@ static bool wantsToQuit() {
     return false;
 }
 
-    // Custom logic for determening max number of items:
-    // min_blocks = 2 * (columns + rows)
-    // matrix_spaces = columns * rows
-    // max_empty_spaces = columns * rows - 2 * (columns + rows);
+// Custom logic for determening max number of items:
+// min_blocks = 2 * (columns + rows)
+// matrix_spaces = columns * rows
+// max_empty_spaces = columns * rows - 2 * (columns + rows);
 const int getMaxItemsNum(int rows, int columns) {
-    return MAX_ITEMS_FRACTION * (columns * rows - 2 * (columns + rows));
-
+    return static_cast<int>(MAX_ITEMS_FRACTION * (columns * rows - 2 * (columns + rows)));
 }
 
 bool GameIO::getValidDimensions(int& r, int& c) {
@@ -56,7 +55,6 @@ bool GameIO::getValidDimensions(int& r, int& c) {
     return false;
 }
 
-
 bool GameIO::getValidItemsNum(int& n, int row, int columns) {
     cout << " Enter the number of ingame items ("
         << MIN_ITEMS_NUM << "<" << "): ";
@@ -79,7 +77,24 @@ bool GameIO::getValidItemsNum(int& n, int row, int columns) {
     return false;
 }
 
-
+char GameIO::getRobotMoveDirection(char& direction)
+{
+    cout << " Enter the robot move direction: ";
+    while (!wantsToQuit()) {
+        cin >> direction;
+        if (direction == 'W' || direction == 'w' ||
+            direction == 'A' || direction == 'a' ||
+            direction == 'S' || direction == 's' ||
+            direction == 'D' || direction == 'd') {
+            clearInput();
+            return false;
+        }
+        else {
+            cout << "Invalid input! Please enter W, A, S, or D." << endl;
+        }
+    }
+	return true;
+}
 
 void GameIO::printWelcomeMessage()
 {
@@ -90,11 +105,23 @@ void GameIO::printWelcomeMessage()
         << "=======================================================\n\n";
 }
 
-void GameIO::printEndMessage()
+void GameIO::printInstructions()
 {
     cout << "=======================================================\n"
-        << " Thank you for playing Robot in Knossos Maze!\n"
-        << " We hope you enjoyed the adventure.\n"
+        << " - Use 'W' to move up, 'S' to move down,\n"
+        << "   'A' to move left, and 'D' to move right.\n"
+        << " - Reach the exit and avoid the Minotaur to win the game.\n"
+        << " - Items will give you mistery effect for 3 turns.\n"
+        << " - Enter 'Q' at any time to quit the game.\n"
+        << "=======================================================\n\n";
+}
+
+void GameIO::printMazeGenerationTime(long long time)
+{
+
+    cout << "\n=======================================================\n"
+        << "Maze generation took " << time << " miliseconds.\n"
+        << "You can now start playing the game!\n"
         << "=======================================================\n";
 }
 
@@ -103,30 +130,48 @@ void GameIO::printMaze(Maze& maze)
 	cout << maze << endl;
 }
 
-void GameIO::printGenerationTime(long long time)
+void GameIO::printEndMessage(string& reason)
 {
-
-    cout << "\n=======================================================\n"
-        << "Maze generation took " << time << " miliseconds.\n"
-        << "You can now start playing the game!\n"
-	    << "=======================================================\n";
+    cout << reason
+        << "=======================================================\n"
+        << " Thank you for playing Robot in Knossos Maze!\n"
+        << " We hope you enjoyed the adventure.\n"
+        << "=======================================================\n";
 }
 
-void GameIO::printInstructions()
+const string& GameIO::getQuitMessage()
 {
-    cout << "=======================================================\n"
-        << " - Use 'W' to move up, 'S' to move down,\n"
-        << "   'A' to move left, and 'D' to move right.\n"
-        << " - Reach the exit and avoid the Minotaur to win the game.\n"
-		<< " - Items will give you mistery effect for 3 turns.\n"
-        << " - Enter 'Q' at any time to quit the game.\n"
-		<< "=======================================================\n\n";
+    static const string msg =
+        "=======================================================\n"
+        " You have chosen to quit the game!\n"
+        "=======================================================\n";
+    return msg;
 }
 
-void GameIO::writeMazeToFile(const Maze& maze, const std::string& filename, bool won)
+const string& GameIO::getLostMessage()
 {
-    string result_message = won ? "Congratulations! You have successfully completed the maze!\n"
-		: "Game Over! You failed to complete the maze.\n";
+    static const string msg =
+        "=======================================================\n"
+        " Game Over!"
+        " The Minotaur got the better of you.\n"
+        " Better luck next time!\n"
+        "=======================================================\n";
+    return msg;
+}
+
+const string& GameIO::getWonMessage()
+{
+    static const string msg =
+        "=======================================================\n"
+        " Congratulations!"
+        " You have successfully completed the maze!\n"
+        " You outsmarted the Minotaur and found the exit!\n"
+        "=======================================================\n";
+    return msg;
+}
+
+void GameIO::writeMazeToFile(const Maze& maze, const string& filename, string& result_message)
+{
     string outFile = filename.empty() ? "last_maze_state.txt" : filename;
     std::ofstream ofs(outFile);
     if (!ofs) {
@@ -134,7 +179,7 @@ void GameIO::writeMazeToFile(const Maze& maze, const std::string& filename, bool
         return;
     }
     ofs << maze;
-    ofs << "/n/n=======================================================\n"
+    ofs << "\n\n=======================================================\n"
         << result_message
         << "=======================================================\n";
     ofs.close();

@@ -63,5 +63,16 @@ void MazeGenerator::generate(Maze& maze) {
             }
         }
     }
+
+	// Add extra paths to create loops and alternatives to avid minotaur capture
+    int extraPaths = (rows * columns) / 30;
+    for (int n = 0; n < extraPaths; ++n) {
+        int x = 1 + rand() % (int((rows - 2)/4));
+        int y = 1 + rand() % (columns - 2);
+        if (maze[x][y]->getSymbol() == '#') {
+            if (maze[x-1][y]->getSymbol() == ' ' && maze[x+1][y]->getSymbol() == ' ') maze[x][y]->setSymbol(' ');
+            else if (maze[x][y-1]->getSymbol() == ' ' && maze[x][y+1]->getSymbol() == ' ') maze[x][y]->setSymbol(' ');
+        }
+        
+    }
 }
- 

@@ -15,7 +15,7 @@ int main() {
     Game game(rows, columns, items_num);
     steady_clock::time_point end_time = steady_clock::now();
     long long duration = duration_cast<milliseconds>(end_time - start_time).count();
-	GameIO::printGenerationTime(duration);
+	GameIO::printMazeGenerationTime(duration);
 	GameIO::printInstructions();
     game.run();
     return 0;

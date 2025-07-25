@@ -9,7 +9,7 @@ public:
 	~Game();
 	void PlaceFields();
 	void moveRobot(char direction);
-	void moveMinotaur();
+	bool moveMinotaur();
 	void GameOver();
 	void run();
 private:

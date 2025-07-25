@@ -4,6 +4,7 @@
 #include <vector>
 #include <utility>
 #include "GameIO.h"
+#include <iostream>
 
 using std::pair;
 using std::vector;
@@ -29,34 +30,53 @@ void Game::PlaceFields() {
     }
     random_shuffle(shuffled_columns.begin(), shuffled_columns.end());
 
-    bool exit_set = false;
-    bool entrance_set = false;
-	int minotaur_x = (rand() % (rows - 2) + 1) / 4; // Minotaur is placed in the first quarter of the maze
     for (int idx : shuffled_columns) {
-        if (!exit_set && maze[1][idx]->getSymbol() == ' ') {
+        if (maze[1][idx]->getSymbol() == ' ') {
             maze[0][idx]->setSymbol('I');
-            exit_set = true;
-        }
-        else if (!entrance_set && maze[rows - 2][idx]->getSymbol() == ' '
+            break;
+        }        
+    }
+    for (int idx : shuffled_columns) {
+        if (maze[rows - 2][idx]->getSymbol() == ' '
             && maze[rows - 3][idx]->getSymbol() == ' ') {
             maze[rows - 1][idx]->setSymbol('U');
             maze[rows - 2][idx]->setSymbol('R');
             this->robot = maze[rows - 2][idx];
-            entrance_set = true;
+			break;
         }
-        else if (maze[minotaur_x][idx]->getSymbol() == ' ') {
+    }
+
+    int minotaur_x = rand() % (rows / 3) + 1;
+	std::cout << "Minotaur X: " << minotaur_x << std::endl;
+    for (int idx : shuffled_columns) {
+        if (maze[minotaur_x][idx]->getSymbol() == ' ') {
             maze[minotaur_x][idx]->setSymbol('M');
             this->minotaur = maze[minotaur_x][idx];
-			break;
+            break;
         }
     }
 }
 
 void Game::moveRobot(char direction)
 {
+    pair<int, int> robot_position = robot->getPosition();
+    int new_x = robot_position.first;
+    int new_y = robot_position.second;
+    switch (direction) {
+        case 'W': case 'w': new_x--; break;
+        case 'S': case 's': new_x++; break;
+        case 'A': case 'a': new_y--; break;
+        case 'D': case 'd': new_y++; break;
+    }
+    if (maze[new_x][new_y]->getSymbol() == ' ' ||
+        maze[new_x][new_y]->getSymbol() == 'I') {
+        robot->setSymbol(' ');
+        maze[new_x][new_y]->setSymbol('R');
+        robot = maze[new_x][new_y];
+    }
 }
 
-void Game::moveMinotaur(){
+bool Game::moveMinotaur(){
     vector<pair<int, int>> directions = { {0, 1}, {1, 0}, {0, -1}, {-1, 0} };
     pair<int, int> minotaur_postition = minotaur->getPosition();
 
@@ -72,24 +92,56 @@ void Game::moveMinotaur(){
             minotaur->setSymbol(' ');
             maze[field_x][field_y]->setSymbol('M');
             minotaur = maze[field_x][field_y];
-			GameOver();
-			return;
+			return true;
 		}
 	}
     Field* next_field = valid_fields[rand() % valid_fields.size()];
     minotaur->setSymbol(' ');
     next_field->setSymbol('M');
 	minotaur = next_field;
-    
+	return false;
 }
 
 void Game::GameOver()
 {
 	// TODO: Implement game over logic
-    GameIO::printEndMessage();
 }
 
 void Game::run()
 {
-		GameIO::printMaze(maze);
+	int end_reason = 0;
+    std::string quit_message;
+    do {
+        GameIO::printMaze(maze);
+		char direction;
+        bool wants_to_quit = GameIO::getRobotMoveDirection(direction);
+        if (wants_to_quit) {
+            break;
+        }
+        moveRobot(direction);
+        bool lost = moveMinotaur();
+        if (robot->getPosition().first == 0) {
+			end_reason = 1;
+            break;
+		}
+        if (lost) {
+			end_reason = 2;
+            break;
+        }
+	} while (true);
+
+    switch (end_reason) {
+        case 0:
+			quit_message = GameIO::getQuitMessage();
+            break;
+        case 1: 
+			quit_message = GameIO::getWonMessage();
+            break;
+        case 2: // Player lost
+			quit_message = GameIO::getLostMessage();
+            break;
+	}
+    GameIO::printEndMessage(quit_message);
+	GameIO::writeMazeToFile(maze, "last_maze_state.txt", quit_message);
+
 }
