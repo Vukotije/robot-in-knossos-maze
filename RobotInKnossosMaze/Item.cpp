@@ -9,10 +9,10 @@ Item::Item(pair<int, int> postion) : Field(postion, 'P') {}
 
 Item* Item::createRandomItem(pair<int, int> position) {
 	//int item_type = rand() % 4;
-	int item_type = 1; // For now, we only have Hammer as a valid item type
+	int item_type = 0; // For now, we only have Hammer as a valid item type
 	switch (item_type) {
-		//case 0: return new WarMist(position);
-		case 1: return new Sword(position);
+		case 0: return new WarMist(position);
+		//case 1: return new Sword(position);
 		//case 2: return new Shield(position);
 		//case 3: return new Hammer(position);
 		default: return nullptr;

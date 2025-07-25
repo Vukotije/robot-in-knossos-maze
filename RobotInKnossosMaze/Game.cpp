@@ -10,7 +10,7 @@ using std::pair;
 using std::vector;
 
 Game::Game(int rows, int columns, int items_num)
-    : maze(rows, columns, items_num), robot(nullptr), minotaur(nullptr)
+	: maze(rows, columns, items_num), robot(nullptr), minotaur(nullptr), current_item{ 0, nullptr }
 {
     PlaceFields(items_num);
 }
@@ -71,19 +71,11 @@ void Game::PlaceFields(int items_num) {
     }
 }
 
-bool Game::moveRobot(char direction, pair<int, Item*>& current_item)
+bool Game::moveRobot(char direction)
 {
     pair<int, int> robot_position = robot->getPosition();
     int new_x = robot_position.first;
     int new_y = robot_position.second;
-	bool has_hamer = false;
-	bool has_sword = false;
-    if (current_item.second != nullptr && current_item.second->getType() == ItemType::HAMMER) {
-		has_hamer = true;
-	}
-    if (current_item.second != nullptr && current_item.second->getType() == ItemType::SWORD) {
-		has_sword = true;
-	}
     switch (direction) {
         case 'W': case 'w': new_x--; break;
         case 'S': case 's': new_x++; break;
@@ -92,19 +84,31 @@ bool Game::moveRobot(char direction, pair<int, Item*>& current_item)
     }
     if ((maze[new_x][new_y]->getSymbol() == ' ' ||
         maze[new_x][new_y]->getSymbol() == 'I') ||
-        (has_hamer && maze[new_x][new_y]->getSymbol() == '#'
+        (current_item.second != nullptr && current_item.second->getType() == ItemType::HAMMER 
+            && maze[new_x][new_y]->getSymbol() == '#'
          && new_x != 0 && new_x != maze.getRows() - 1
          && new_y != 0 && new_y != maze.getColumns() - 1)) {
         robot->setSymbol(' ');
         maze[new_x][new_y]->setSymbol('R');
         robot = maze[new_x][new_y];
     }
-    else if (maze[new_x][new_y]->getSymbol() == 'M' && has_sword) {
-		robot->setSymbol(' ');
-		minotaur->setSymbol('R');
-        return true;
-
+    else if (maze[new_x][new_y]->getSymbol() == 'M') {
+        if (current_item.second != nullptr) {
+            if (current_item.second->getType() == ItemType::SWORD) {
+                robot->setSymbol(' ');
+                minotaur->setSymbol('R');
+                return true;
+            }
+            else if (current_item.second->getType() == ItemType::SHIELD) {
+                return false;
+            }
+        }
+        else {
+            robot->setSymbol(' ');
+            return true;
+        }
     }
+    
     else if (maze[new_x][new_y]->getSymbol() == 'P') {
         current_item.second = static_cast<Item*>(maze[new_x][new_y]);
         current_item.first = 3;
@@ -116,7 +120,7 @@ bool Game::moveRobot(char direction, pair<int, Item*>& current_item)
 	return false;
 }
 
-bool Game::moveMinotaur(pair<int, Item*>& current_item){
+bool Game::moveMinotaur(){
     vector<pair<int, int>> directions = { {0, 1}, {1, 0}, {0, -1}, {-1, 0} };
     pair<int, int> minotaur_postition = minotaur->getPosition();
 
@@ -129,22 +133,28 @@ bool Game::moveMinotaur(pair<int, Item*>& current_item){
             valid_fields.push_back(maze[field_x][field_y]);
 		}
         else if (maze[field_x][field_y]->getSymbol() == 'R') {
-            if (current_item.second != nullptr && current_item.second->getType() == ItemType::SWORD) {
-				maze[minotaur_postition.first][minotaur_postition.second]->setSymbol(' ');
-				return true;
+            if (current_item.second != nullptr) {
+                if (current_item.second->getType() == ItemType::SWORD) {
+                    maze[minotaur_postition.first][minotaur_postition.second]->setSymbol(' ');
+                    return true;
+                } 
+                else if (current_item.second->getType() == ItemType::SHIELD) {
+					continue;
+                }
             } else {
                 minotaur->setSymbol(' ');
-                maze[field_x][field_y]->setSymbol('M');
+                robot->setSymbol('M');
                 minotaur = maze[field_x][field_y];
                 return true;
-			}
-            
+			}            
 		}
 	}
-    Field* next_field = valid_fields[rand() % valid_fields.size()];
-    minotaur->setSymbol(' ');
-    next_field->setSymbol('M');
-	minotaur = next_field;
+    if (!valid_fields.empty()) {
+        Field* next_field = valid_fields[rand() % valid_fields.size()];
+        minotaur->setSymbol(' ');
+        next_field->setSymbol('M');
+        minotaur = next_field;
+	}
 	return false;
 }
 
@@ -153,25 +163,27 @@ void Game::run()
 {
 	int end_reason = 0;
     std::string quit_message;
-	pair<int, Item*> current_item = { 0, nullptr };
-	bool killed_minotaur = false;
 	bool fight = false;
+	char direction;
+	bool wants_to_quit = false;
 
     do {
         GameIO::printMaze(maze);
-		char direction;
-        bool wants_to_quit = GameIO::getRobotMoveDirection(direction);
+        wants_to_quit = GameIO::getRobotMoveDirection(direction);
         if (wants_to_quit) {
             break;
         }
-        killed_minotaur = moveRobot(direction, current_item);
-        if (killed_minotaur) {
+
+        fight = moveRobot(direction);
+        if (fight) {
+            if (current_item.second != nullptr && current_item.second->getType() == ItemType::SWORD) {
+                end_reason = 2;
+                break;
+            }
             end_reason = 1;
             break;
 		}
-		current_item.first--;
-
-        fight = moveMinotaur(current_item);        
+        fight = moveMinotaur();        
         if (fight) {
             if (current_item.second != nullptr && current_item.second->getType() == ItemType::SWORD) {
 				end_reason = 1;
@@ -185,6 +197,8 @@ void Game::run()
 			end_reason = 1;
             break;
 		}
+
+        current_item.first--;
         if (current_item.first < 0 && current_item.second != nullptr) {
             current_item = { 0, nullptr };
 		}

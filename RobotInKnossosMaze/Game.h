@@ -14,9 +14,10 @@ private:
 	Maze maze;
 	Field* robot;
 	Field* minotaur;
+	std::pair<int, Item*> current_item;
 
 	void PlaceFields(int items_num);
-	bool moveRobot(char direction, std::pair<int, Item*>& current_item);
-	bool moveMinotaur(std::pair<int, Item*>& current_item);
+	bool moveRobot(char direction);
+	bool moveMinotaur();
 };
 
