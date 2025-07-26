@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <fstream>
 #include <iostream>
+#include <iomanip>
 
 using std::cout;
 using std::cin;
@@ -119,9 +120,9 @@ void GameIO::printInstructions() {
         << "=======================================================\n\n";
 }
 
-void GameIO::printMazeGenerationTime(long long time) {
+void GameIO::printMazeGenerationTime(double time) {
     cout << "\n=======================================================\n"
-        << "Maze generation took " << time << " miliseconds.\n"
+        << "Maze generation took " << std::fixed << std::setprecision(3) << time << " miliseconds.\n"
         << "You can now start playing the game!\n"
         << "=======================================================\n";
 }

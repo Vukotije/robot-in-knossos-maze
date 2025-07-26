@@ -25,8 +25,8 @@ public:
     static void printWelcomeMessage();
     static void printInstructions();
 
-    // Displays the maze generation time in milliseconds
-    static void printMazeGenerationTime(long long time);
+    // Displays the maze generation time in milliseconds (as a decimal number)
+    static void printMazeGenerationTime(double time);
     static void printMaze(const Maze& maze);
 
     // Displays the maze with fog of war effect around the robot
