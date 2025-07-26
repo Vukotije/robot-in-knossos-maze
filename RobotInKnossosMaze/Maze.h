@@ -1,14 +1,15 @@
 #pragma once
+
 #include "Field.h"
-#include <vector>
+
 #include <iostream>
+#include <vector>
 
-
- // This class represents the complete maze structure
- // containing all fields, and items arranged in a matrix.
+// This class represents the complete maze structure
+// containing all fields, and items arranged in a matrix.
 class Maze {
 public:
-    Maze(int rows, int columns, int numItems);
+    Maze(int rows, int columns, int num_items);
     ~Maze();
     int getRows() const;
     int getColumns() const;
@@ -21,6 +22,7 @@ public:
     friend std::ostream& operator<<(std::ostream& os, const Maze& maze);
 
 private:
-    int rows, columns;
-    std::vector<std::vector<Field*>> matrix;
+    int rows_;
+    int columns_;
+    std::vector<std::vector<Field*>> matrix_;
 };

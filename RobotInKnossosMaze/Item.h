@@ -2,9 +2,11 @@
 // for various power-ups that provide temporary abilities to the robot.
 
 #pragma once
+
 #include "Field.h"
-#include <utility>
+
 #include <string>
+#include <utility>
 
 enum class ItemType {
     WAR_FOG,
@@ -15,23 +17,22 @@ enum class ItemType {
 
 // Items provide temporary power-ups to the robot when collected,
 // lasting for a limited number of turns.
-class Item : public Field
-{
+class Item : public Field {
 public:
-	Item(std::pair<int, int> position);
+    Item(std::pair<int, int> position);
     virtual ~Item() = default;
     static Item* createRandomItem(std::pair<int, int> position);
     virtual ItemType getType() const = 0;
-    virtual std::string get_description() const = 0;
+    virtual std::string getDescription() const = 0;
 };
 
- // This item provides limited vision around the robot
+// This item provides limited vision around the robot
 class WarFog : public Item {
 public:
     WarFog(std::pair<int, int> position);
     ~WarFog() override;
     ItemType getType() const override;
-    std::string get_description() const override;
+    std::string getDescription() const override;
 };
 
 // Item that allows the robot to kill the minotaur
@@ -40,7 +41,7 @@ public:
     Sword(std::pair<int, int> position);
     ~Sword() override;
     ItemType getType() const override;
-    std::string get_description() const override;
+    std::string getDescription() const override;
 };
 
 // Item that provides protection from minotaur attacks
@@ -49,7 +50,7 @@ public:
     Shield(std::pair<int, int> position);
     ~Shield() override;
     ItemType getType() const override;
-    std::string get_description() const override;
+    std::string getDescription() const override;
 };
 
 // Item that allows breaking through walls
@@ -58,5 +59,5 @@ public:
     Hammer(std::pair<int, int> position);
     ~Hammer() override;
     ItemType getType() const override;
-    std::string get_description() const override;
+    std::string getDescription() const override;
 };

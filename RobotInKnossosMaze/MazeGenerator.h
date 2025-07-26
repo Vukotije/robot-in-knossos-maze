@@ -1,11 +1,13 @@
 #pragma once
-#include <vector>
-#include <utility>
+
 #include "Maze.h"
 
- // This class provides static methods for generating maze layouts
- // using depth-first search algorithm with randomized paths,
- // ensuring there's always a solvable path.
+#include <utility>
+#include <vector>
+
+// This class provides static methods for generating maze layouts
+// using depth-first search algorithm with randomized paths,
+// ensuring there's always a solvable path.
 class MazeGenerator {
 public:
     static void generate(Maze& maze);
