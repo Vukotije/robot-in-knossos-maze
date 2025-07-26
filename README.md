@@ -31,7 +31,7 @@ A C++ console-based maze game inspired by the Greek myth of Theseus and the Mino
 - [📄 License](#-license)
 - [🏛️ About the Myth](#️-about-the-myth)
 
-## 📖� Overview
+## 📖 Overview
 
 The Robot in Knossos Maze is an object-oriented C++ implementation of a classic maze escape game. Players control a robot that must navigate through a dynamically generated maze, collect strategic items, and reach the exit while avoiding the deadly Minotaur that roams the labyrinth.
 
