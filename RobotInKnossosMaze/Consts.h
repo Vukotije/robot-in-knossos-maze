@@ -4,9 +4,10 @@
 
 #pragma once
 
-// Min/Max allowed maze size for rows and columns
+// Min allowed maze size for rows and columns
 const int MIN_MAZE_SIZE = 15;
-const int MAX_MAZE_SIZE = 100;
+// Maximum so the console can display the maze properly
+const int MAX_MAZE_SIZE = 170;
 
 // Minimum number of items that must be placed in the maze
 const int MIN_ITEMS_NUM = 3;
@@ -20,7 +21,8 @@ const float MAX_ITEMS_FRACTION = 0.05f;
 // min_blocks = 2 * (columns + rows)
 // matrix_spaces = columns * rows
 // max_empty_spaces = columns * rows - 2 * (columns + rows);
-inline int get_max_items_num(int rows, int columns) {
+inline int get_max_items_num(int rows, int columns)
+{
     return static_cast<int>(MAX_ITEMS_FRACTION * (columns * rows - 2 * (columns + rows)));
 }
 

@@ -72,7 +72,7 @@ void MazeGenerator::generate(Maze& maze) {
 
     // Add extra paths to top third to create loops
     // and alternatives to avoid minotaur capture
-    int extraPaths = (rows * columns) * EXTRA_PATHS_FRACTION;
+    int extraPaths = static_cast<int>((rows * columns)* EXTRA_PATHS_FRACTION);
     for (int n = 0; n < extraPaths; ++n) {
         int x = 1 + rand() % (int((rows - 2) * MINOTAUR_PLACEMENT_FRACTION));
         int y = 1 + rand() % (columns - 2);
