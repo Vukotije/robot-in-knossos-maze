@@ -19,7 +19,7 @@ Item* Item::createRandomItem(pair<int, int> position) {
     }
 }
 
-// WarFog implementation
+
 WarFog::WarFog(pair<int, int> position) : Item(position) {}
 WarFog::~WarFog() {};
 ItemType WarFog::getType() const {
@@ -29,7 +29,7 @@ string WarFog::getDescription() const {
     return "War Mist: A mystical fog that temporarily limits vision.";
 }
 
-// Sword implementation
+
 Sword::Sword(pair<int, int> position) : Item(position) {}
 Sword::~Sword() {};
 ItemType Sword::getType() const {
@@ -39,7 +39,7 @@ string Sword::getDescription() const {
     return "Sword: A sharp blade that can slay the minotaur.";
 }
 
-// Shield implementation
+
 Shield::Shield(pair<int, int> position) : Item(position) {}
 Shield::~Shield() {};
 ItemType Shield::getType() const {
@@ -49,7 +49,7 @@ string Shield::getDescription() const {
     return "Shield: A sturdy shield that provides protection from minotaur attacks.";
 }
 
-// Hammer implementation
+
 Hammer::Hammer(pair<int, int> position) : Item(position) {}
 Hammer::~Hammer() {};
 ItemType Hammer::getType() const {

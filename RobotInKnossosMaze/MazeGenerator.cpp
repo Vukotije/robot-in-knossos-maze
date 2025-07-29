@@ -1,4 +1,3 @@
-// Implementation of maze generation algorithms
 #include "MazeGenerator.h"
 
 #include "Consts.h"
@@ -23,8 +22,8 @@ void MazeGenerator::carveMazeDFS(int x, int y, int rows, int cols, Maze& maze, v
         int betweenX = x + dx / 2;
         int betweenY = y + dy / 2;
 
-        // Check if next position is within bounds and is a wall and carve a path
-        // by removing the wall between current and next position
+        // Check if next position is within bounds and is a wall then,
+        // carve a path by removing the wall between current and next position
         if (nextX > 0 && nextX < rows - 1 && nextY > 0 && nextY < cols - 1
             && maze[nextX][nextY]->getSymbol() == '#') {
             maze[betweenX][betweenY]->setSymbol(' ');

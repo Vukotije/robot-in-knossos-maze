@@ -15,6 +15,5 @@ public:
 
 private:
     std::pair<int, int> position_;
-    /// Character symbol for display representation
     char symbol_;
 };

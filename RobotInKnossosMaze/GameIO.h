@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include "Field.h"
@@ -24,17 +23,14 @@ public:
 
     static void printWelcomeMessage();
     static void printInstructions();
+    static void printMaze(const Maze& maze);
+    static void printFoggedMaze(const Maze& maze, Field* robot);
+    static void printEndMessage(std::string& reason);
+    static void printItemDescription(const std::string& description);
 
     // Displays the maze generation time in milliseconds (as a decimal number)
     static void printMazeGenerationTime(double time);
-    static void printMaze(const Maze& maze);
-
-    // Displays the maze with fog of war effect around the robot
-    static void printFoggedMaze(const Maze& maze, Field* robot);
-    static void printEndMessage(std::string& reason);
     
-    static void printItemDescription(const std::string& description);
-
     // Writes the final maze state to a file and includes the game result message
     // If the file cannot be opened, an error message is displayed
     static void writeMazeToFile(const Maze& maze, const std::string& filename, std::string& result_message);

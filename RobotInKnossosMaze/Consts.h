@@ -1,4 +1,4 @@
-// Constants and utility functions for the Robot in Knossos Maze game
+// Constants for the Robot in Knossos Maze game
 // This header defines global constants for maze dimensions, item limits,
 // and provides utility functions for calculating game parameters.
 

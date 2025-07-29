@@ -1,8 +1,3 @@
-/**
- * @file GameIO.cpp
- * @brief Implementation of game input/output operations
- */
-
 #include "GameIO.h"
 
 #include "Consts.h"

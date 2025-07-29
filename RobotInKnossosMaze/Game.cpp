@@ -1,5 +1,3 @@
-// Implementation of the main game controller and logic
-
 #include "Game.h"
 
 #include "Consts.h"
@@ -161,7 +159,6 @@ bool Game::moveMinotaur() {
     for (pair<int, int> dir : directions) {
         int fieldX = minotaurPosition.first + dir.first;
         int fieldY = minotaurPosition.second + dir.second;
-        // Can move to empty spaces or destroy items
         if (maze_[fieldX][fieldY]->getSymbol() == ' ' ||
             maze_[fieldX][fieldY]->getSymbol() == 'P') {
             validFields.push_back(maze_[fieldX][fieldY]);
