@@ -1,5 +1,12 @@
 # Robot in Knossos Maze
 
+<p align="center">
+  <img src="https://img.shields.io/badge/Language-C++17-blue.svg" />
+  <img src="https://img.shields.io/badge/Platform-Windows%2010/11-lightgrey.svg" />
+  <img src="https://img.shields.io/badge/IDE-Visual%20Studio%202022-purple.svg" />
+  <img src="https://img.shields.io/badge/Build-x64-success.svg" />
+</p>
+
 A C++ console-based maze game inspired by the Greek myth of Theseus and the Minotaur. Navigate a procedurally generated labyrinth, collect powerful items, and escape before the Minotaur catches you!
 
 ## � Table of Contents
