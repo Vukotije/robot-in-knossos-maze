@@ -316,9 +316,9 @@ paket-files/
 __pycache__/
 *.pyc
 
-# Text files (ignore .txt files in all directories)
-*.txt
-**/*.txt
+# Text files in src
+RobotInKnossosMaze/*.txt
+
 
 # Cake - Uncomment if you are using it
 # tools/**

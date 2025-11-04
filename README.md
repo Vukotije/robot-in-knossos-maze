@@ -2,9 +2,9 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/Language-C++17-blue.svg" />
-  <img src="https://img.shields.io/badge/Platform-Windows%2010/11-lightgrey.svg" />
-  <img src="https://img.shields.io/badge/IDE-Visual%20Studio%202022-purple.svg" />
-  <img src="https://img.shields.io/badge/Build-x64-success.svg" />
+  <img src="https://img.shields.io/badge/Platform-Cross--Platform-lightgrey.svg" />
+  <img src="https://img.shields.io/badge/Build%20System-CMake%20%7C%20VS2022-purple.svg" />
+  <img src="https://img.shields.io/badge/Architecture-x64-success.svg" />
 </p>
 
 A C++ console-based maze game inspired by the Greek myth of Theseus and the Minotaur. Navigate a procedurally generated labyrinth, collect powerful items, and escape before the Minotaur catches you!
@@ -89,11 +89,22 @@ The project follows object-oriented design principles with clear separation of c
 
 ### Prerequisites
 
+**Option 1: CMake (Recommended - Cross-platform)**
+
+- **CMake** 3.15 or higher
+- **C++17** compatible compiler:
+  - Windows: Visual Studio 2019+, MinGW-GCC 8+, or Clang 10+
+  - Linux: GCC 8+ or Clang 10+
+  - macOS: Xcode 11+ or Clang 10+
+
+**Option 2: Visual Studio (Windows only)**
+
 - **Visual Studio 2022** (v143 platform toolset)
 - **Windows 10/11** (x64 architecture)
-- **C++17** or later standard support
 
 ### Building the Project
+
+#### **Method 1: Using CMake (Cross-platform)**
 
 1. **Clone the repository**:
 
@@ -102,6 +113,32 @@ The project follows object-oriented design principles with clear separation of c
    cd robot-in-knossos-maze
    ```
 
+2. **Build with CMake**:
+
+   ```bash
+   # Create build directory
+   mkdir build
+   cd build
+
+   # Configure and build
+   cmake ..
+   cmake --build . --config Release
+   ```
+
+3. **Run the game**:
+
+   ```bash
+   # Windows
+   .\bin\Release\RobotInKnossosMaze.exe
+
+   # Linux/macOS
+   ./bin/RobotInKnossosMaze
+   ```
+
+#### **Method 2: Using Visual Studio (Windows)**
+
+1. **Clone the repository** (same as above)
+
 2. **Open in Visual Studio**:
 
    - Open `RobotInKnossosMaze.sln` in Visual Studio 2022
@@ -109,20 +146,32 @@ The project follows object-oriented design principles with clear separation of c
    - Choose platform (x64 recommended)
 
 3. **Build and run**:
+
    - Press `F5` to build and run with debugging
    - Or press `Ctrl+F5` to run without debugging
    - Alternatively, use Build → Build Solution (`Ctrl+Shift+B`)
 
-### Running from Command Line
+4. **Run from command line**:
 
-Navigate to the output directory and run:
+   ```powershell
+   # For Debug build
+   .\x64\Debug\RobotInKnossosMaze.exe
+
+   # For Release build
+   .\x64\Release\RobotInKnossosMaze.exe
+   ```
+
+### Quick Build Commands
 
 ```bash
-# For Debug build
-.\x64\Debug\RobotInKnossosMaze.exe
+# Windows (CMake + Visual Studio)
+cmake -B build -G "Visual Studio 17 2022" && cmake --build build --config Release
 
-# For Release build
-.\x64\Release\RobotInKnossosMaze.exe
+# Windows (CMake + MinGW)
+cmake -B build -G "MinGW Makefiles" && cmake --build build
+
+# Linux/macOS
+cmake -B build && cmake --build build
 ```
 
 ## 🎯 How to Play
